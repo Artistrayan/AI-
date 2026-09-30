@@ -10,6 +10,9 @@ import {
   Sparkles,
   Volume2,
   VolumeX,
+  BookOpen,
+  Brain,
+  Search,
 } from 'lucide-react';
 import { CognitiveMode, Language } from '../types';
 
@@ -19,10 +22,12 @@ interface HeaderProps {
   lang: Language;
   onToggleLang: () => void;
   onOpenSettings: () => void;
+  onOpenGlobalSearch: () => void;
   onResetSession: () => void;
   autoSpeech: boolean;
   onToggleSpeech: () => void;
   isStreaming: boolean;
+  knowledgeCount?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -31,37 +36,47 @@ export const Header: React.FC<HeaderProps> = ({
   lang,
   onToggleLang,
   onOpenSettings,
+  onOpenGlobalSearch,
   onResetSession,
   autoSpeech,
   onToggleSpeech,
   isStreaming,
+  knowledgeCount = 0,
 }) => {
   const isFa = lang === 'fa';
 
-  const modes: Array<{ id: CognitiveMode; labelFa: string; labelEn: string; icon: React.ReactNode }> = [
+  const modes: Array<{ id: CognitiveMode; labelFa: string; labelEn: string; icon: React.ReactNode; badge?: string | number }> = [
     {
       id: 'sovereign',
-      labelFa: 'هوش حاکم و مستقل',
+      labelFa: 'هوش حاکم',
       labelEn: 'Sovereign AGI',
       icon: <Sparkles className="h-4 w-4" />,
     },
     {
+      id: 'knowledge',
+      labelFa: 'پایگاه دانش',
+      labelEn: 'Knowledge Vault',
+      icon: <BookOpen className="h-4 w-4" />,
+      badge: knowledgeCount > 0 ? knowledgeCount : undefined,
+    },
+    {
+      id: 'learning',
+      labelFa: 'یادگیری بی‌درنگ',
+      labelEn: 'Learning Engine',
+      icon: <Brain className="h-4 w-4" />,
+      badge: isFa ? 'پیوسته' : 'LIVE',
+    },
+    {
       id: 'mission',
-      labelFa: 'مأموریت‌های خودکار',
-      labelEn: 'Agent Missions',
+      labelFa: 'مأموریت‌ها',
+      labelEn: 'Missions',
       icon: <Zap className="h-4 w-4" />,
     },
     {
       id: 'terminal',
-      labelFa: 'ترمینال سایبری',
-      labelEn: 'Cyber Terminal',
+      labelFa: 'ترمینال',
+      labelEn: 'Terminal',
       icon: <TerminalIcon className="h-4 w-4" />,
-    },
-    {
-      id: 'search',
-      labelFa: 'پژوهش زنده وب',
-      labelEn: 'Web Intelligence',
-      icon: <Globe className="h-4 w-4" />,
     },
   ];
 
@@ -119,6 +134,13 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="hidden sm:inline">
                   {isFa ? mode.labelFa : mode.labelEn}
                 </span>
+                {mode.badge !== undefined && (
+                  <span className={`text-[10px] font-mono px-1 rounded-full ${
+                    active ? 'bg-cyan-500/30 text-cyan-200' : 'bg-slate-800 text-slate-400'
+                  }`}>
+                    {mode.badge}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -126,6 +148,21 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          {/* Global Search Quick Trigger */}
+          <button
+            onClick={onOpenGlobalSearch}
+            className="flex items-center gap-2 rounded-xl border border-cyan-500/20 bg-[#060911]/90 px-3 py-1.5 text-xs text-slate-400 hover:border-cyan-500/40 hover:text-cyan-200 transition-all shadow-inner"
+            title={isFa ? 'جستجوی سراسری (Ctrl + K)' : 'Global Search (Ctrl + K)'}
+          >
+            <Search className="h-3.5 w-3.5 text-cyan-400" />
+            <span className="hidden xl:inline text-slate-300">
+              {isFa ? 'جستجوی سراسری...' : 'Search everything...'}
+            </span>
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded bg-slate-800/80 px-1.5 py-0.5 text-[10px] font-mono text-cyan-300 border border-slate-700">
+              <span>⌘K</span>
+            </kbd>
+          </button>
+
           {/* Voice Output Toggle */}
           <button
             onClick={onToggleSpeech}

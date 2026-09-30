@@ -13,6 +13,7 @@ export async function streamChat(
     systemInstruction: string;
     temperature: number;
     enableSearch: boolean;
+    enableMaps?: boolean;
     thinkingLevel: string;
     model?: string;
   },
@@ -130,4 +131,64 @@ export async function checkHealth(): Promise<{ status: string; apiKeyAvailable: 
   } catch {
     return { status: 'offline', apiKeyAvailable: false, version: 'unknown' };
   }
+}
+
+export async function ingestData(rawText: string, category: string = 'custom'): Promise<any> {
+  const res = await fetch('/api/learning/ingest', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rawText, category }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to ingest data.');
+  }
+
+  return res.json();
+}
+
+export async function synthesizeWebKnowledge(topic: string, category: string = 'science'): Promise<any> {
+  const res = await fetch('/api/learning/web-synthesize', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic, category }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to synthesize web knowledge.');
+  }
+
+  return res.json();
+}
+
+export async function reflectAndAdapt(recentConversations: any[], currentDirectives: string): Promise<any> {
+  const res = await fetch('/api/learning/reflect-and-adapt', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ recentConversations, currentDirectives }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to reflect and adapt.');
+  }
+
+  return res.json();
+}
+
+export async function transcribeAudio(audioBase64: string, mimeType: string = 'audio/webm'): Promise<{ text: string }> {
+  const res = await fetch('/api/audio/transcribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ audioBase64, mimeType }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Audio transcription failed.');
+  }
+
+  return res.json();
 }

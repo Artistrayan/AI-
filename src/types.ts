@@ -1,8 +1,45 @@
 export type Language = 'fa' | 'en';
 
-export type CognitiveMode = 'sovereign' | 'mission' | 'code' | 'search' | 'terminal';
+export type CognitiveMode = 'sovereign' | 'mission' | 'knowledge' | 'learning' | 'terminal' | 'search';
 
 export type ThinkingLevelOption = 'HIGH' | 'LOW' | 'MINIMAL';
+
+export type KnowledgeCategory =
+  | 'science'
+  | 'technology'
+  | 'history_philosophy'
+  | 'abstract'
+  | 'current_events'
+  | 'custom';
+
+export interface KnowledgeItem {
+  id: string;
+  title: string;
+  category: KnowledgeCategory;
+  summary: string;
+  content: string;
+  tags: string[];
+  source: 'vault' | 'web_ingested' | 'user_injected' | 'autonomous_reflection';
+  timestamp: number;
+  active: boolean;
+}
+
+export interface LearningEvolutionLog {
+  id: string;
+  timestamp: number;
+  trigger: string;
+  learnedConcepts: string[];
+  adaptationSummary: string;
+  confidenceScore: number;
+}
+
+export interface LearningMetrics {
+  totalIngestedDataPoints: number;
+  activeKnowledgeNodes: number;
+  adaptationLevel: number;
+  reflectionCycles: number;
+  lastIngestionTime: number;
+}
 
 export interface GroundingSource {
   title?: string;
@@ -11,8 +48,12 @@ export interface GroundingSource {
 
 export interface GroundingMetadata {
   webSearchQueries?: string[];
-  groundingChunks?: Array<{ web?: { uri?: string; title?: string } }>;
+  groundingChunks?: Array<{
+    web?: { uri?: string; title?: string };
+    maps?: { uri?: string; title?: string; placeId?: string; address?: string };
+  }>;
   searchEntryPoint?: { renderedContent?: string };
+  groundingSupports?: any[];
 }
 
 export interface Message {
@@ -66,6 +107,7 @@ export interface SovereignSettings {
   temperature: number;
   thinkingLevel: ThinkingLevelOption;
   enableSearch: boolean;
+  enableMaps: boolean;
   model: string;
   memories: NeuralMemoryItem[];
   autoSpeech: boolean;
