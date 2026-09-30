@@ -1,0 +1,6 @@
+{
+  "name": "Nexus Sovereign AI - سامانه هوش مصنوعی مستقل و نامحدود",
+  "description": "هوش مصنوعی مستقل، واقع‌گرا و فوق‌پیشرفته برای اجرای انواع دستورات پیچیده، برنامه‌نویسی، پژوهش آزاد و عاملیت خودکار چندمرحله‌ای.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
